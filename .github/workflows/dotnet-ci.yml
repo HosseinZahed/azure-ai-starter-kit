@@ -50,6 +50,7 @@ jobs:
         run: dotnet dev-certs https --trust
 
       - name: Build
+        id: build
         run: dotnet build ./StarterKit.sln --configuration Release
 
       - name: Test
