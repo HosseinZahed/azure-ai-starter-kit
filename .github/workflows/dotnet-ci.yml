@@ -59,7 +59,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         # Note that the space after the last double dash (--) is intentional
         run: |
-          dotnet tool install --global Microsoft.TestPlatform.Toolset
+          dotnet tool install --global Microsoft.TestPlatform
           dotnet test ./src/StarterKit.Tests/StarterKit.Tests.csproj
           --logger console --logger trx --logger html 
           --results-directory ./TestResults --blame
