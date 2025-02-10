@@ -59,7 +59,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         # Note that the space after the last double dash (--) is intentional
         run: >
-          dotnet test ./src/StarterKit.Tests.csproj --configuration Release
+          dotnet test ./src/StarterKit.Tests/StarterKit.Tests.csproj --configuration Release
           --logger console --logger trx --logger html --logger GitHubActions
           --results-directory ./TestResults --blame
           -- 
