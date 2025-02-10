@@ -38,7 +38,7 @@ jobs:
         with:
           global-json-file: ${{ matrix.os == 'ubuntu-latest' && './global.json' || '.\global.json' }}
           dotnet-version: |
-            8.0.x
+            9.0.x
 
       - name: Print .NET info
         run: dotnet --info
