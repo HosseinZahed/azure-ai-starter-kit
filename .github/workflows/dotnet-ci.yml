@@ -58,7 +58,7 @@ jobs:
         # We only test on Ubuntu because Windows agents don't support Docker with WSL
         if: matrix.os == 'ubuntu-latest'
         # Note that the space after the last double dash (--) is intentional
-        run: >
+        run: |
           dotnet tool install --global Microsoft.TestPlatform.Toolset
           dotnet test ./src/StarterKit.Tests/StarterKit.Tests.csproj
           --logger console --logger trx --logger html 
