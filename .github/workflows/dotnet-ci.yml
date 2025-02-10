@@ -61,10 +61,9 @@ jobs:
         run: >
           dotnet tool install --global Microsoft.TestPlatform.Toolset
           dotnet test ./src/StarterKit.Tests/StarterKit.Tests.csproj
-          --logger console --logger trx --logger html --logger GitHubActions
+          --logger console --logger trx --logger html 
           --results-directory ./TestResults --blame
-          -- 
-          RunConfiguration.CollectSourceInformation=true
+          -- RunConfiguration.CollectSourceInformation=true
 
       - name: Publish Test Results
         if: (success() || steps.test.conclusion == 'failure') && matrix.os == 'ubuntu-latest'
