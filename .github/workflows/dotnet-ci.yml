@@ -50,7 +50,7 @@ jobs:
         run: dotnet dev-certs https --trust
 
       - name: Build
-        run: ${{ matrix.os == 'ubuntu-latest' && './build.sh' || '.\build.cmd' }}
+        run: dotnet build ./StarterKit.sln --configuration Release
 
       - name: Test
         id: test
