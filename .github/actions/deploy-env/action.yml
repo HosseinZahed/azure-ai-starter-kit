@@ -1,0 +1,77 @@
+name: 'Provision Azure Environment'
+description: >
+  This action will provision an Azure environment and read its variables (deployment outputs).
+  If the environment already exists, it will update the provisioned resources.
+
+inputs:
+  AZURE_ENV_NAME:
+    description: 'The name of the Azure environment'
+    required: true
+  AZURE_RESOURCE_GROUP:
+    description: 'The name of the Azure resource group'
+    required: true
+  AZURE_SUBSCRIPTION_ID:
+    description: 'The Azure subscription ID'
+    required: true
+  AZURE_LOCATION:
+    description: 'The Azure location'
+    required: true
+  AZURE_PRINCIPAL_ID:
+    description: 'The Azure principal ID'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: 'Checkout repository'
+      uses: actions/checkout@v4.2.2
+
+    - name: 'Set up Azure CLI'
+      uses: azure/setup-azure@v2.1.0      
+
+    - name: 'Install Azure Developer CLI'
+      uses: Azure/setup-azd@v2.1.0
+
+    - name: 'Login to Azure CLI'
+      uses: azure/login@v2.2.0
+      with:
+        creds: ${{ inputs.AZURE_CREDENTIALS }}
+
+    - name: 'Set environment variables'
+      id: set-env-variables
+      shell: bash
+      run: |
+        VARIABLES=("AZURE_ENV_NAME" "AZURE_PRINCIPAL_ID" "AZURE_RESOURCE_GROUP" "AZURE_LOCATION" "AZURE_SUBSCRIPTION_ID")
+
+        for VAR in "${VARIABLES[@]}"; do
+          echo "${VAR}=${{ inputs[$VAR] }}" >> $GITHUB_ENV
+        done
+
+    - name: 'Check if azd environment exists'
+      id: check-env
+      shell: bash
+      run: |
+        if azd env list | grep -q $AZURE_ENV_NAME; then
+          echo "env_exists=true" >> $GITHUB_ENV
+        else
+          echo "env_exists=false" >> $GITHUB_ENV
+        fi
+
+    - name: 'Provision or update azd environment'
+      id: provision-update-env
+      shell: bash
+      run: |
+        if [ "${{ env.env_exists }}" = "true" ]; then
+          echo "Updating existing azd environment..."
+          azd env refresh -e $AZURE_ENV_NAME
+        else
+          echo "Creating new azd environment..."
+          azd env new -e $AZURE_ENV_NAME --location $AZURE_LOCATION --resource-group $AZURE_RESOURCE_GROUP
+        fi    
+
+    - name: 'Output deployment variables'
+      id: output-deployment-variables
+      shell: bash
+      run: |
+        azd env show -e $AZURE_ENV_NAME --output json > $GITHUB_ENV
+
