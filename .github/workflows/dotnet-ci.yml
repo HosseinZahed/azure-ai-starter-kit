@@ -1,4 +1,4 @@
-name: .NET Aspire Samples CI
+name: 'dotnet CI'
 
 on:
   push:
@@ -22,7 +22,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
-    name: Build & Test Samples
+    name: Build & Test
     env:
       DOTNET_CLI_TELEMETRY_OPTOUT: true
       DOTNET_NOLOGO: true
