@@ -1,3 +1,4 @@
+﻿using Microsoft.FluentUI.AspNetCore.Components;
 using StarterKit.Web;
 using StarterKit.Web.Components;
 
@@ -17,6 +18,9 @@ builder.Services.AddHttpClient<WeatherApiClient>(client =>
         // Learn more about service discovery scheme resolution at https://aka.ms/dotnet/sdschemes.
         client.BaseAddress = new("https+http://apiservice");
     });
+
+// Add Fluent UI Components
+builder.Services.AddFluentUIComponents();
 
 var app = builder.Build();
 
