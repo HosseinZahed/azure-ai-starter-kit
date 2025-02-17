@@ -1,14 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <Content Remove="C:\Users\hosseinzahed\.nuget\packages\system.diagnostics.diagnosticsource\9.0.2\contentFiles\any\net9.0\ILLink\ILLink.Descriptors.LibraryBuild.xml" />
-  </ItemGroup>
+  </PropertyGroup>  
 
   <ItemGroup>
     <ProjectReference Include="..\StarterKit.ServiceDefaults\StarterKit.ServiceDefaults.csproj" />
