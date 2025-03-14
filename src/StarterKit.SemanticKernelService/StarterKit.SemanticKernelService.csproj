@@ -3,15 +3,12 @@
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <Nullable>enable</Nullable>    
   </PropertyGroup>
 
   <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    
-    <PackageReference Include="Microsoft.SemanticKernel" Version="1.37.0" />    
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.AzureOpenAI" Version="1.37.0" />    
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Ollama" Version="1.37.0-alpha" />   
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />  
+    <PackageReference Include="Microsoft.SemanticKernel" Version="1.37.0" />
   </ItemGroup>
 
 </Project>

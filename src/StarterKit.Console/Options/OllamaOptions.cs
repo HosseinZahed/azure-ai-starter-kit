@@ -2,7 +2,7 @@
 
 using System.ComponentModel.DataAnnotations;
 
-namespace StarterKit.SemanticKernelService.Options;
+namespace StarterKit.ConsoleApp.Options;
 
 public sealed class OllamaOptions
 {

@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StarterKit.Tests", "src\Sta
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StarterKit.SemanticKernelService", "src\StarterKit.SemanticKernelService\StarterKit.SemanticKernelService.csproj", "{592D7CCE-61D7-45C4-BB59-7682FF94DB72}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StarterKit.ConsoleApp", "src\StarterKit.Console\StarterKit.ConsoleApp.csproj", "{1A63CC04-487C-4049-8C23-DCD74A74CEC2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{592D7CCE-61D7-45C4-BB59-7682FF94DB72}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{592D7CCE-61D7-45C4-BB59-7682FF94DB72}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{592D7CCE-61D7-45C4-BB59-7682FF94DB72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A63CC04-487C-4049-8C23-DCD74A74CEC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A63CC04-487C-4049-8C23-DCD74A74CEC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A63CC04-487C-4049-8C23-DCD74A74CEC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A63CC04-487C-4049-8C23-DCD74A74CEC2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

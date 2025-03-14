@@ -1,46 +1,54 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
+using Microsoft.SemanticKernel.ChatCompletion;
+using Microsoft.SemanticKernel.Connectors.AzureOpenAI;
 using StarterKit.SemanticKernelService.Options;
+using StarterKit.SemanticKernelService.Plugins;
+using StarterKit.SemanticKernelService.Services;
 
 namespace StarterKit.SemanticKernelService;
 
 public static class Extensions
 {
-    public static TBuilder AddSemanticKernelService<TBuilder>(this TBuilder builder, IConfiguration? configuration) where TBuilder : IHostApplicationBuilder
+    public static TBuilder AddSemanticKernelService<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
     {
         // Azure OpenAI configuration
         builder.Services.AddOptions<AzureOpenAIOptions>()
-            .Bind(builder.Configuration.GetSection(nameof(AzureOpenAIOptions.SectionName)))
-            .ValidateDataAnnotations()
-            .ValidateOnStart();
+            .Bind(builder.Configuration.GetSection(nameof(AzureOpenAIOptions.SectionName)));
+        //.ValidateDataAnnotations()
+        //.ValidateOnStart();
 
-        // Ollama configuration
-        builder.Services.AddOptions<OllamaOptions>()
-            .Bind(builder.Configuration.GetSection(nameof(OllamaOptions.SectionName)))
-            .ValidateDataAnnotations()
-            .ValidateOnStart();
+        var azureOpenAIOptions = builder.Configuration.GetSection(AzureOpenAIOptions.SectionName).Get<AzureOpenAIOptions>()
+            ?? throw new InvalidOperationException($"Missing configuration section '{AzureOpenAIOptions.SectionName}'");
 
-        // Retrieve the option values
-        var serviceProvider = builder.Services.BuildServiceProvider();
-        var azureOpenAIOptions = serviceProvider.GetRequiredService<IOptions<AzureOpenAIOptions>>().Value;
-        var ollamaOptions = serviceProvider.GetRequiredService<IOptions<OllamaOptions>>().Value;
+        // Chat completion service that kernels will use
+        builder.Services.AddSingleton<IChatCompletionService>(sp =>
+        {
+            return new AzureOpenAIChatCompletionService(
+                azureOpenAIOptions.ChatDeploymentName,
+                azureOpenAIOptions.Endpoint,
+                azureOpenAIOptions.ApiKey);
+        });
 
-        // Register Azure OpenAI chat completion service
-        builder.Services.AddAzureOpenAIChatCompletion(
-            deploymentName: azureOpenAIOptions.ChatDeploymentName,
-            endpoint: azureOpenAIOptions.Endpoint,
-            apiKey: azureOpenAIOptions.ApiKey
-        );
+        // Add Plug-ins
+        builder.Services.AddSingleton<CurrentDateTimePlugin>();
 
-        // Register Ollama chat completion service
-#pragma warning disable SKEXP0070
-        builder.Services.AddOllamaChatCompletion(
-            modelId: ollamaOptions.ModelName,
-            endpoint: new Uri(ollamaOptions.Endpoint)
-         );
+        // Add Kernel
+        builder.Services.AddKeyedTransient<Kernel>(Constants.StarterKitKernel, (sp, key) =>
+        {
+            // Add ConsolePlugIns
+            KernelPluginCollection pluginCollection = [];
+            pluginCollection.AddFromObject(sp.GetRequiredService<CurrentDateTimePlugin>());
+
+            // Create the Kernel
+            return new Kernel(sp, pluginCollection);
+        });
+
+        // Add project services
+        builder.Services.AddTransient<IAzureOpenAIService, AzureOpenAIService>();
+
         return builder;
     }
 }
