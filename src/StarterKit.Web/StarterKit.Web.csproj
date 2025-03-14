@@ -4,17 +4,24 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <UserSecretsId>5fa722a6-2a33-4e62-b599-dd0eb1e9dc87</UserSecretsId>
   </PropertyGroup>  
 
   <ItemGroup>
+    <ProjectReference Include="..\StarterKit.SemanticKernelService\StarterKit.SemanticKernelService.csproj" />
     <ProjectReference Include="..\StarterKit.ServiceDefaults\StarterKit.ServiceDefaults.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspire.StackExchange.Redis.OutputCaching" Version="9.0.0" />
-    <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components" Version="4.11.4" />
-    <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Emoji" Version="4.11.4" />
-    <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="4.11.4" />
+    <PackageReference Include="Aspire.StackExchange.Redis.OutputCaching" Version="9.1.0" />
+    <PackageReference Include="Markdig" Version="0.40.0" />
+    <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components" Version="4.11.5" />
+    <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Emoji" Version="4.11.5" />
+    <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="4.11.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\scripts\MarkdownSection.js" />
   </ItemGroup>
 
 </Project>

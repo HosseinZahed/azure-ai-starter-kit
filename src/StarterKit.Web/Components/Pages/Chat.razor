@@ -1,0 +1,121 @@
+﻿@page "/chat"
+@rendermode InteractiveServer
+@attribute [StreamRendering]
+@inject ApiClient apiClient
+@inject IJSRuntime jsRuntime
+
+<PageTitle>Chat</PageTitle>
+
+<h1>Chat</h1>
+
+<FluentCard>	
+	<FluentSwitch @bind-Value=isStreaming Label="Response Type">
+		<span slot="checked-message">Streaming</span>
+		<span slot="unchecked-message">Non-Streaming</span>
+	</FluentSwitch>
+
+    <div id="responseContaine">   
+        @if (history.Count == 0)
+        {
+            <div style="padding:5px 0px;">
+                <span>
+                    <FluentIcon Value="(new Icons.Regular.Size20.Person())" />
+                </span>
+                <span style="margin-left:5px;">Hello, how can I help you?</span>
+            </div>
+        }
+        else
+		{        
+            @for (int i = 0; i < history.Count; i++)
+          {        
+                <div style="padding: 0px;">            
+                     @if(i % 2 == 0)
+                 {            
+                        <span>
+                            <FluentIcon Value="(new Icons.Regular.Size20.Person())"/>                        
+                   </span>                    
+                    }
+                    else
+                    {
+                        <span style="margin-top: 5px">
+                            <FluentIcon Value="(new Icons.Regular.Size20.Bot())" />
+                   </span>                    
+                }                
+                    <span style="margin-left:5px;">
+						<FluentMarkdownSection Content="history[i].Items[0]" />						
+					</span>
+
+                </div>
+            }
+            <span style="margin-left:5px;">
+				<FluentMarkdownSection Content="@chunksText"/>
+			</span>
+			
+        }
+    </div>
+    <br />
+    <FluentDivider Style="width: 100%;" Role="DividerRole.Presentation"></FluentDivider>
+    <br />
+    <div>        
+        <FluentTextArea @bind-Value=userInput style="width: 100%;" placeholder="Enter your message"></FluentTextArea>
+         <b r/><br/>
+		<FluentButton Appearance="Appearance.Accent" @onclick="SendMessage">Send</FluentButton>
+	</div>
+</FluentCard>
+
+
+@code {
+	private StringBuilder chunks = new();
+	private string chunksText = string.Empty;
+	private string userInput = string.Empty;
+	private ChatHistory history = new();
+	private bool isStreaming = true;
+	private CancellationTokenSource? cts;
+
+	private async Task SendMessage()
+	{
+		if (string.IsNullOrEmpty(userInput))
+			return;
+
+		history.AddUserMessage(userInput);
+		userInput = string.Empty;
+
+		cts?.Cancel();
+		cts = new CancellationTokenSource();
+		var token = cts.Token;
+
+		if (isStreaming)
+		{
+			await HandleStreamingResponseAsync(token);
+		}
+		else
+		{
+			await HandleNonStreamingResponseAsync(token);
+		}
+	}
+
+	private async Task HandleNonStreamingResponseAsync(CancellationToken token)
+	{
+		var response = await apiClient.GetAzureOpenAIChatResponseAsync(history, token);		
+		history.AddAssistantMessage(response ?? "Error in response");
+		StateHasChanged();
+	}
+
+	private async Task HandleStreamingResponseAsync(CancellationToken token)
+	{
+		await foreach (var chunkResponse in apiClient.GetAzureOpenAIChatStreamingResponseAsync(history, token))
+		{
+			if (chunkResponse != null)
+			{
+				chunks.Append(chunkResponse);
+				chunksText = chunks.ToString();
+				StateHasChanged();				
+			}
+		}
+		history.AddAssistantMessage(chunks.ToString());
+		chunksText = string.Empty;
+		chunks.Clear();
+		StateHasChanged();
+
+	}
+}
